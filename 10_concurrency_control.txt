@@ -1,0 +1,51 @@
+-- Create and use your database
+CREATE DATABASE mydb;
+USE mydb;
+
+-- Create the employee table
+CREATE TABLE employee (
+  emp_id INT PRIMARY KEY,
+  name VARCHAR(50),
+  department VARCHAR(50),
+  salary INT
+);
+
+-- Insert sample data
+INSERT INTO employee VALUES
+(1,'Alice Johnson','Admin',50000),
+(3,'Charlie Brown','Finance',60000),
+(4,'David Wilson','IT',85000),
+(5,'Emma Davis','HR',55000),
+(6,'Frank Miller','Finance',62000);
+
+Case 1 — Open TWO terminals
+Terminal 1:
+sqlSELECT * FROM employee;       -- See the data
+LOCK TABLE employee READ;     -- Apply Read lock
+
+Terminal 2 (immediately after):
+sqlSELECT * FROM employee;       -- ✅ This works! Read locks are compatible
+
+
+
+Case 2
+Terminal 1:
+sqlUNLOCK TABLES;                 -- Remove previous lock
+LOCK TABLE employee WRITE;    -- Apply Write lock
+
+Terminal 2:
+sqlSELECT * FROM employee;        -- ⏳ This HANGS (waits for T1 to unlock)
+Now go back to Terminal 1:
+sqlUNLOCK TABLES;                 -- Now Terminal 2 instantly shows results!
+
+
+
+Case 3
+Terminal 1:
+sqlLOCK TABLE employee WRITE;
+
+Terminal 2:
+sqlUPDATE employee SET salary=95000 WHERE emp_id=4;  -- ⏳ Hangs!
+
+Terminal 1:
+sqlUNLOCK TABLES;   -- Terminal 2's UPDATE now executes!
