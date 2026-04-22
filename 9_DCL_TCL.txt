@@ -1,5 +1,6 @@
 # Experiment
 
+# DCL COMMANDS 
 
 # FROM ROOT USER TERMINAL
 
@@ -263,6 +264,8 @@ mysql>
 
 
 # Exercise 1
+Create User3 with blank password and grant that user update privilege on employee table.
+Demonstrate that the user3 can update salary of employee id 105 to 60000.
 
 #login as user
 
