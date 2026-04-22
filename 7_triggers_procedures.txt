@@ -1,0 +1,182 @@
+mysql> select fname, lname, (english + maths + science) as Total_Marks, case when (english + maths + science) > 230 then 'A'
+    -> when (english + maths + science) between 190 and 230 then 'B'
+    -> when (english + maths + science) between 189 and 150 then 'C'
+    -> else 'D'
+    -> end as Grades from student;
++--------+--------+-------------+--------+
+| fname  | lname  | Total_Marks | Grades |
++--------+--------+-------------+--------+
+| john   | Doe    |         151 | D      |
+| sarah  | shaikh |         197 | B      |
+| joe    | wumba  |         135 | D      |
+| deniel | clark  |         212 | B      |
++--------+--------+-------------+--------+
+
+mysql> select fname, lname, if( (maths)/100 < 0.50, 'Failed in maths', 'Pass in maths') as Result from student;
++--------+--------+-----------------+
+| fname  | lname  | Result          |
++--------+--------+-----------------+
+| john   | Doe    | Pass in maths   |
+| sarah  | shaikh | Pass in maths   |
+| joe    | wumba  | Failed in maths |
+| deniel | clark  | Pass in maths   |
++--------+--------+-----------------+
+
+
+# PROFIT LOSS FUNCTION USING DELIMITER
+
+mysql> create function calculateProfit(purchase int, sell int) returns int
+    -> deterministic
+    -> begin
+    -> declare profit int;
+    -> set profit = sell - purchase;
+    -> return profit;
+    -> end $$\
+Query OK, 0 rows affected (0.098 sec)
+
+mysql> delimiter ;
+mysql>
+mysql> select bname, purchase, sell, calculateProfit(purchase, sell) as Net_Profit from business;
++------------------+----------+--------+------------+
+| bname            | purchase | sell   | Net_Profit |
++------------------+----------+--------+------------+
+| Gada Electronics |     7414 |   5544 |      -1870 |
+| Abdul Soda       |      741 |    963 |        222 |
+| Ridego           |    85555 | 998656 |     913101 |
++------------------+----------+--------+------------+
+3 rows in set (0.012 sec)
+
+
+
+# Income Tax cal using Delimiter
+
+mysql> delimiter $$
+mysql> create function tax_calc(salary int) returns int
+    -> deterministic
+    -> begin
+    -> declare inc_tax int;
+    -> set inc_tax = salary * 0.08;
+    -> return inc_tax;
+    -> end $$
+Query OK, 0 rows affected (0.392 sec)
+
+mysql> delimiter ;
+mysql>
+mysql> select Ename, Dept, Salary, tax_calc(salary) as Income_Tax from employee;
++-----------+------------+--------+------------+
+| Ename     | Dept       | Salary | Income_Tax |
++-----------+------------+--------+------------+
+| Amit      | Production |  50000 |       4000 |
+| Neha      | Finance    |  60000 |       4800 |
+| Raj       | Production |  95000 |       7600 |
+| Simran    | HR         |  55000 |       4400 |
+| Karan     | Finance    |  45000 |       3600 |
+| Priyanshu | IT         |  70000 |       5600 |
++-----------+------------+--------+------------+
+
+
+
+Exercise 1 :
+Write a PL/SQL function and a procedure to determine the grade of an employee based on salary.
+≥ 60000 A
+45000 – 59999 B
+30000 – 44999 C
+< 30000 D
+Create a user-defined function get_grade() such that: Accepts salary as input.and displays the grade as above
+
+mysql> select ename, Dept, salary, case when salary >= 60000 then 'A'
+    -> when salary between 45000 and 59999 then 'B'
+    -> when salary between 30000 and 44999 then 'C'
+    -> when salary < 3000 then 'D'
+    -> end as Grades from employee;
++-----------+------------+--------+--------+
+| ename     | Dept       | salary | Grades |
++-----------+------------+--------+--------+
+| Amit      | Production |  50000 | B      |
+| Neha      | Finance    |  60000 | A      |
+| Raj       | Production |  95000 | A      |
+| Simran    | HR         |  55000 | B      |
+| Karan     | Finance    |  45000 | B      |
+| Priyanshu | IT         |  70000 | A      |
++-----------+------------+--------+--------+
+
+and the other method is through delimiter
+
+mysql> create function sal_grade(salary int) returns char(1)
+    -> deterministic
+    -> begin
+    -> declare grade char(1);
+    ->          if salary >= 60000 then
+    ->                  set grade = 'A';
+    ->          elseif salary <45000 and salary >= 30000 then
+    ->                  set grade = 'C';
+    ->          elseif salary <60000 and salary >= 45000 then
+    ->                  set grade = 'B';
+    ->          else
+    ->                  set grade = 'D';
+    -> end if;
+    -> return grade;
+    -> end $$
+Query OK, 0 rows affected (0.102 sec)
+
+-> delimiter ;
+
+mysql> select ename, dept, salary, sal_grade(salary) as Grades from employee;
++-----------+------------+--------+--------+
+| ename     | dept       | salary | Grades |
++-----------+------------+--------+--------+
+| Amit      | Production |  50000 | B      |
+| Neha      | Finance    |  60000 | A      |
+| Raj       | Production |  95000 | A      |
+| Simran    | HR         |  55000 | B      |
+| Karan     | Finance    |  45000 | B      |
+| Priyanshu | IT         |  70000 | A      |
++-----------+------------+--------+--------+
+6 rows in set (0.014 sec)
+
+# EXERCISE 2
+Write a user-defined function annual_bonus_calculated() that:
+
+ Calculates the annual salary (salary × 12).
+ Calculates bonus based on annual salary as below:
+≥ 7,20,000 → 10% bonus
+6,00,000 – 7,19,999 → 7% bonus
+ < 6,00,000 → 5% bonus
+ Return the bonus amount.
+· Display fname, lname, salary, annual salary, and bonus using the function
+
+
+mysql> create function bonus_calc(salary int) returns int
+    -> deterministic
+    -> begin
+    -> declare bonus_sal int;
+    -> declare annual_sal int;
+    -> set annual_sal = salary * 12;
+    ->          if annual_sal >= 720000 then
+    ->                  set bonus_sal = annual_sal * 0.10;
+    ->          elseif annual_sal >600000 and annual_sal <= 719999 then
+    ->                  set bonus_sal = annual_sal * 0.07;
+    ->          elseif annual_sal < 60000 then
+    ->                  set bonus_sal = annual_sal * 0.05;
+    -> end if;
+    -> return bonus_sal;
+    -> end $$
+Query OK, 0 rows affected (0.121 sec)
+mysql> delimiter ;
+mysql>
+mysql>
+mysql>
+mysql> select ename, dept, salary, bonus_calc(salary) as Annual_Bonus from employee;
++-----------+------------+--------+--------------+
+| ename     | dept       | salary | Annual_Bonus |
++-----------+------------+--------+--------------+
+| Amit      | Production |  50000 |         NULL |
+| Neha      | Finance    |  60000 |        72000 |
+| Raj       | Production |  95000 |       114000 |
+| Simran    | HR         |  55000 |        46200 |
+| Karan     | Finance    |  45000 |         NULL |
+| Priyanshu | IT         |  70000 |        84000 |
++-----------+------------+--------+--------------+
+6 rows in set (0.013 sec)
+
+mysql>
