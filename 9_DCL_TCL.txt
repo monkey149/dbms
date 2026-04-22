@@ -1,0 +1,348 @@
+# Experiment
+
+
+# FROM ROOT USER TERMINAL
+
+1. login as the root user
+
+-> mysql -u root -p
+
+2. create new user
+
+-> create user 'monkey'@'localhost' identified by '1234';
+
+then exit from the root user
+
+-> exit
+
+
+# LOGIN AS NEW USER IN A NEW TERMINAL
+
+-> mysql -u monkey -p
+(enter password: 1234)
+
+create a database
+
+mysql> create database mydatabase;
+ERROR 1044 (42000): Access denied for user 'monkey'@'localhost' to database 'mydatabase'
+
+error aayega, now
+
+-> exit;
+
+
+# LOGIN AS ROOT IN THE MAIN TERMINAL
+
+-> mysql -u root -p
+
+mysql> grant create on *.* to 'monkey'@'localhost';
+Query OK, 0 rows affected (0.100 sec)
+
+mysql> exit;
+Bye
+
+
+# LOGIN IN THE NEXT TERMINAL AS USER
+
+-> mysql -u monkey -p
+
+mysql> create database mydatabase;
+Query OK, 1 row affected (0.135 sec)
+
+Now create a table
+
+mysql> use mydatabase;
+Database changed
+mysql> create table students(Sid int, Sname varchar(30), address varchar(50), branch varchar(20));
+Query OK, 0 rows affected (0.484 sec)
+
+mysql> insert into students value(1, 'Monkey', 'Gangtok', 'CS');
+ERROR 1142 (42000): INSERT command denied to user 'monkey'@'localhost' for table 'students'
+
+-> exit;
+
+# LOGIN AS ROOT AND GRANT ALL PERMISSION
+
+mysql> grant all on *.* to 'monkey'@'localhost';
+Query OK, 0 rows affected (0.111 sec)
+
+mysql> exit;
+Bye
+
+
+# LOGIN AS USER
+
+mysql> insert into students values(1, 'Monkey', 'Gangtok', 'CS');
+Query OK, 1 row affected (0.143 sec)
+
+mysql> select *from students;
++------+--------+---------+--------+
+| Sid  | Sname  | address | branch |
++------+--------+---------+--------+
+|    1 | Monkey | Gangtok | CS     |
++------+--------+---------+--------+
+1 row in set (0.006 sec)
+
+mysql> drop table students;
+Query OK, 0 rows affected (0.192 sec)
+
+mysql>
+
+# LOGIN AS USER AND REVOKE ALL PERMISSION FOR USER
+
+mysql> revoke all on *.*  from 'monkey'@'localhost';
+Query OK, 0 rows affected (0.146 sec)
+
+mysql> exit;
+Bye
+
+
+# LOGIN AS USER AND CHECK
+
+mysql> use mydatabase;
+ERROR 1044 (42000): Access denied for user 'monkey'@'localhost' to database 'mydatabase'
+mysql>
+
+error will come,
+Program is done!!
+
+
+
+# PERFORMING TCL COMMANDS 
+
+# create database -> create tables then do the following steps;
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  40000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.007 sec)
+
+mysql> set autocommit = 0;
+Query OK, 0 rows affected (0.068 sec)
+
+mysql> update employee set salary = 45000 where EID = 3;
+Query OK, 1 row affected (0.010 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  45000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.007 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.094 sec)
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  40000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.006 sec)
+
+mysql> set autocommit = 0;
+Query OK, 0 rows affected (0.006 sec)
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  40000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.006 sec)
+
+mysql> savepoint A;
+Query OK, 0 rows affected (0.069 sec)
+
+mysql> insert into employee value(7, 'Thala', 'HR', 77777);
+Query OK, 1 row affected (0.008 sec)
+
+mysql> insert into employee value(8, 'Vijay', 'Finance', 30000);
+Query OK, 1 row affected (0.006 sec)
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  40000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
+|   7 | Thala  | HR         |  77777 |
+|   8 | Vijay  | Finance    |  30000 |
++-----+--------+------------+--------+
+8 rows in set (0.007 sec)
+
+mysql> rollback to savepoint A;
+Query OK, 0 rows affected (0.006 sec)
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  40000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.007 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.047 sec)
+
+mysql> set autocommit = 0;
+Query OK, 0 rows affected (0.005 sec)
+
+mysql> update employee set salary = 95000 where EID = 3;
+Query OK, 1 row affected (0.070 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  95000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.007 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.039 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.005 sec)
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  95000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.005 sec)
+
+mysql>
+
+
+# Exercise 1
+
+#login as user
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
++--------------------+
+2 rows in set (0.020 sec)
+
+mysql> exit;
+Bye
+
+# LOGIN AS ROOT
+
+(table khud bana lena if koi table mila nai toh)
+
+mysql> select *from employee;
++-----+--------+------------+--------+
+| EID | Ename  | Dept       | Salary |
++-----+--------+------------+--------+
+|   1 | Amit   | Production |  50000 |
+|   2 | Neha   | Finance    |  60000 |
+|   3 | Raj    | Production |  95000 |
+|   4 | Simran | HR         |  55000 |
+|   5 | Karan  | Finance    |  45000 |
+|   6 | Priya  | IT         |  70000 |
++-----+--------+------------+--------+
+6 rows in set (0.008 sec)
+
+mysql> grant update on demo.employee to 'monkey'@'localhost';
+Query OK, 0 rows affected (0.091 sec)
+
+mysql> grant select on demo.employee to 'monkey'@'localhost';
+Query OK, 0 rows affected (0.091 sec)
+
+mysql> flush privileges;
+
+-> exit;
+
+# LOGIN AS USER
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| demo               |
+| information_schema |
+| performance_schema |
++--------------------+
+3 rows in set (0.016 sec)
+
+mysql> use demo;
+Database changed
+mysql> update employee set Ename = 'Priyanshu' where EID = 6;
+Query OK, 1 row affected (0.079 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *from employee;
++-----+-----------+------------+--------+
+| EID | Ename     | Dept       | Salary |
++-----+-----------+------------+--------+
+|   1 | Amit      | Production |  50000 |
+|   2 | Neha      | Finance    |  60000 |
+|   3 | Raj       | Production |  95000 |
+|   4 | Simran    | HR         |  55000 |
+|   5 | Karan     | Finance    |  45000 |
+|   6 | Priyanshu | IT         |  70000 |
++-----+-----------+------------+--------+
+6 rows in set (0.005 sec)
+
+mysql>
+
+
+Program done!!!!
+
+
+
+
+
+
