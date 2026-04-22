@@ -1,0 +1,219 @@
+1. Listing of the names of all clients having ‘a’ as the second letter in their names.
+mysql> select ClientNo, Name from client where Name like '_a%';
++----------+----------------+
+| ClientNo | Name           |
++----------+----------------+
+| C02      | Mamta Muzumdar |
+| C05      | Hansel Colaco  |
++----------+----------------+
+2 rows in set (0.009 sec)
+
+2. Listing of the clients who stay in a city whose first letter is ‘M’.
+mysql> select ClientNo, Name, City from client where city like 'M%';
++----------+----------------+-----------+
+| ClientNo | Name           | City      |
++----------+----------------+-----------+
+| C01      | Ivan Bayross   | Mumbai    |
+| C02      | Mamta Muzumdar | Madras    |
+| C03      | Chhaya Bankar  | Mumbai    |
+| C05      | Hansel Colaco  | Mumbai    |
+| C06      | Deepak Sharma  | Mangalore |
++----------+----------------+-----------+
+5 rows in set (0.006 sec)
+
+3. Display Name city and balance using concatenation function, as Ivan Byross Mumbai having
+balance 15000.
+mysql> select concat(Name, ' ', 'living in', ' ', City, ' ', 'having balance', ' ', Baldue) as Client_Status from client;
++-------------------------------------------------------+
+| Client_Status                                         |
++-------------------------------------------------------+
+| Ivan Bayross living in Mumbai having balance 15000    |
+| Mamta Muzumdar living in Madras having balance 1000   |
+| Chhaya Bankar living in Mumbai having balance 5000    |
+| Ashwini Joshi living in Bangalore having balance 1500 |
+| Hansel Colaco living in Mumbai having balance 2000    |
+| Deepak Sharma living in Mangalore having balance 6000 |
++-------------------------------------------------------+
+6 rows in set (0.008 sec)
+or
+ ysql> select concat(Name, ' ', 'living in', ' ', City, ' ', 'having balance', ' ', Baldue) as Client_Status from client where ClientNo = 'C01';
++----------------------------------------------------+
+| Client_Status                                      |
++----------------------------------------------------+
+| Ivan Bayross living in Mumbai having balance 15000 |
++----------------------------------------------------+
+1 row in set (0.009 sec)
+
+4. Display names in uppercase
+mysql> select ucase(Name) as Upper_Case_Name from client;
++-----------------+
+| Upper_Case_Name |
++-----------------+
+| IVAN BAYROSS    |
+| MAMTA MUZUMDAR  |
+| CHHAYA BANKAR   |
+| ASHWINI JOSHI   |
+| HANSEL COLACO   |
+| DEEPAK SHARMA   |
++-----------------+
+6 rows in set (0.325 sec)
+
+5. Find the unique states present in the client table.
+mysql> select distinct state from client;
++-------------+
+| state       |
++-------------+
+| Maharashtra |
+| Tamil Nadu  |
+| Karnataka   |
++-------------+
+3 rows in set (0.012 sec)
+
+6. Display records by ascending order of date of purchase.
+mysql> select Date_of_purchase from client order by (Date_of_purchase); #descending poocha toh order by (-Date_of_purchase)
++------------------+
+| Date_of_purchase |
++------------------+
+| 2018-05-24       |
+| 2018-10-10       |
+| 2019-02-03       |
+| 2019-02-03       |
+| 2019-07-14       |
+| 2019-12-04       |
++------------------+
+6 rows in set (0.011 sec)
+
+
+7. List all clients who stay in ‘Bangalore’ or ‘Mangalore’.
+mysql> select ClientNo, Name, City from client where City IN ('Bangalore', 'Mangalore');
++----------+---------------+-----------+
+| ClientNo | Name          | City      |
++----------+---------------+-----------+
+| C04      | Ashwini Joshi | Bangalore |
+| C06      | Deepak Sharma | Mangalore |
++----------+---------------+-----------+
+2 rows in set (0.012 sec)
+
+
+8. List all clients whose BalDue is greater than value 10,000.
+mysql> select ClientNo, Name, City from client where BalDue > 10000;
++----------+--------------+--------+
+| ClientNo | Name         | City   |
++----------+--------------+--------+
+| C01      | Ivan Bayross | Mumbai |
++----------+--------------+--------+
+1 row in set (0.009 sec)
+
+
+9. Listing of names, city, and state of clients who are not in the state of ‘Maharashtra’.
+
+mysql> select ClientNo, Name, City, State from client where state != 'Maharashtra';
++----------+----------------+-----------+------------+
+| ClientNo | Name           | City      | State      |
++----------+----------------+-----------+------------+
+| C02      | Mamta Muzumdar | Madras    | Tamil Nadu |
+| C04      | Ashwini Joshi  | Bangalore | Karnataka  |
+| C06      | Deepak Sharma  | Mangalore | Karnataka  |
++----------+----------------+-----------+------------+
+3 rows in set (0.012 sec)
+
+
+10. Find the average BalDue of the clients.
+mysql> select avg(BalDue) as Average_Balance from client;
++-----------------+
+| Average_Balance |
++-----------------+
+|       5083.3333 |
++-----------------+
+1 row in set (0.007 sec)
+
+11. Find minimum and maximum BalDue among the client.
+mysql> select max(Baldue) as Max_Balance, min(BalDue) as Min_Balance from client;
++-------------+-------------+
+| Max_Balance | Min_Balance |
++-------------+-------------+
+|       15000 |        1000 |
++-------------+-------------+
+1 row in set (0.008 sec)
+
+
+12. Find the name of the clients whose BalDue is between 1000 to 2000.
+mysql> select ClientNo, Name, BalDue from client where BalDue between 1000 and 2000;
++----------+----------------+--------+
+| ClientNo | Name           | BalDue |
++----------+----------------+--------+
+| C02      | Mamta Muzumdar |   1000 |
+| C04      | Ashwini Joshi  |   1500 |
+| C05      | Hansel Colaco  |   2000 |
++----------+----------------+--------+
+3 rows in set (0.009 sec)
+
+
+13. Find total of the BalDue as ‘TotalDueBal’ from given table.
+mysql> select sum(BalDue) as Total_BalDue from client;
++--------------+
+| Total_BalDue |
++--------------+
+|        30500 |
++--------------+
+1 row in set (0.010 sec)
+
+14. Find the clients who belongs to Karnataka.
+mysql> select ClientNo, Name, State from client where state = 'Karnataka';
++----------+---------------+-----------+
+| ClientNo | Name          | State     |
++----------+---------------+-----------+
+| C04      | Ashwini Joshi | Karnataka |
+| C06      | Deepak Sharma | Karnataka |
++----------+---------------+-----------+
+2 rows in set (0.008 sec)
+
+15. Count the number of clients from Maharashtra
+mysql> select count(*) as No_of_Clients_from_Maharashtra from client where state = 'Maharashtra';
++--------------------------------+
+| No_of_Clients_from_Maharashtra |
++--------------------------------+
+|                              3 |
++--------------------------------+
+1 row in set (0.009 sec)
+
+16. Find the clients who live in Maharashtra and whose balance due is greater than 10000.
+mysql> select ClientNo, Name from client where state = 'Maharashtra' and BalDue > 10000;
++----------+--------------+
+| ClientNo | Name         |
++----------+--------------+
+| C01      | Ivan Bayross |
++----------+--------------+
+1 row in set (0.008 sec)
+
+
+
+17. Update the city of the client C04 to Pune, state to Maharashtra and Pincode 400019.
+mysql> update client set city = 'Pune', state = 'Maharashtra', pincode = 400019 where ClientNo = 'C04';
+Query OK, 1 row affected (0.401 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *from client where ClientNo = 'C04';
++----------+---------------+------+---------+-------------+--------+--------+------------------+
+| ClientNo | Name          | City | PinCode | State       | BalDue | Amount | Date_of_purchase |
++----------+---------------+------+---------+-------------+--------+--------+------------------+
+| C04      | Ashwini Joshi | Pune |  400019 | Maharashtra |   1500 |  50000 | 2019-07-14       |
++----------+---------------+------+---------+-------------+--------+--------+------------------+
+1 row in set (0.010 sec)
+
+
+18. Delete the record of C06 from database.
+mysql> delete from client where clientNo = 'C06';
+Query OK, 1 row affected (0.455 sec)
+
+mysql> select *from client;
++----------+----------------+--------+---------+-------------+--------+--------+------------------+
+| ClientNo | Name           | City   | PinCode | State       | BalDue | Amount | Date_of_purchase |
++----------+----------------+--------+---------+-------------+--------+--------+------------------+
+| C01      | Ivan Bayross   | Mumbai |  400054 | Maharashtra |  15000 |  25000 | 2019-02-03       |
+| C02      | Mamta Muzumdar | Madras |  780001 | Tamil Nadu  |   1000 |  30000 | 2019-12-04       |
+| C03      | Chhaya Bankar  | Mumbai |  400057 | Maharashtra |   5000 |  35000 | 2018-05-24       |
+| C04      | Ashwini Joshi  | Pune   |  400019 | Maharashtra |   1500 |  50000 | 2019-07-14       |
+| C05      | Hansel Colaco  | Mumbai |  400060 | Maharashtra |   2000 |  10000 | 2018-10-10       |
++----------+----------------+--------+---------+-------------+--------+--------+------------------+
+5 rows in set (0.009 sec)
