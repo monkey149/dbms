@@ -1,3 +1,47 @@
+mysql> -- Create the table
+Query OK, 0 rows affected (0.006 sec)
+
+mysql> CREATE TABLE client (
+    ->     ClientNo VARCHAR(5) PRIMARY KEY,
+    ->     Name VARCHAR(50),
+    ->     City VARCHAR(30),
+    ->     PinCode INT,
+    ->     State VARCHAR(30),
+    ->     BalDue INT,
+    ->     Amount INT,
+    ->     Date_of_purchase DATE
+    -> );
+Query OK, 0 rows affected (0.622 sec)
+
+mysql>
+mysql> -- Insert the values
+Query OK, 0 rows affected (0.003 sec)
+
+mysql> INSERT INTO client (ClientNo, Name, City, PinCode, State, BalDue, Amount, Date_of_purchase) VALUES
+    -> ('C01', 'Ivan Bayross', 'Mumbai', 400054, 'Maharashtra', 15000, 25000, '2019-02-03'),
+    -> ('C02', 'Mamta Muzumdar', 'Madras', 780001, 'Tamil Nadu', 1000, 30000, '2019-12-04'),
+    -> ('C03', 'Chhaya Bankar', 'Mumbai', 400057, 'Maharashtra', 5000, 35000, '2018-05-24'),
+    -> ('C04', 'Ashwini Joshi', 'Bangalore', 560001, 'Karnataka', 1500, 50000, '2019-07-14'),
+    -> ('C05', 'Hansel Colaco', 'Mumbai', 400060, 'Maharashtra', 2000, 10000, '2018-10-10'),
+    -> ('C06', 'Deepak Sharma', 'Mangalore', 560050, 'Karnataka', 6000, 22000, '2019-02-03');
+Query OK, 6 rows affected (0.027 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select *from client;
++----------+----------------+-----------+---------+-------------+--------+--------+------------------+
+| ClientNo | Name           | City      | PinCode | State       | BalDue | Amount | Date_of_purchase |
++----------+----------------+-----------+---------+-------------+--------+--------+------------------+
+| C01      | Ivan Bayross   | Mumbai    |  400054 | Maharashtra |  15000 |  25000 | 2019-02-03       |
+| C02      | Mamta Muzumdar | Madras    |  780001 | Tamil Nadu  |   1000 |  30000 | 2019-12-04       |
+| C03      | Chhaya Bankar  | Mumbai    |  400057 | Maharashtra |   5000 |  35000 | 2018-05-24       |
+| C04      | Ashwini Joshi  | Bangalore |  560001 | Karnataka   |   1500 |  50000 | 2019-07-14       |
+| C05      | Hansel Colaco  | Mumbai    |  400060 | Maharashtra |   2000 |  10000 | 2018-10-10       |
+| C06      | Deepak Sharma  | Mangalore |  560050 | Karnataka   |   6000 |  22000 | 2019-02-03       |
++----------+----------------+-----------+---------+-------------+--------+--------+------------------+
+
+
+# Answers
+
 1. Listing of the names of all clients having ‘a’ as the second letter in their names.
 mysql> select ClientNo, Name from client where Name like '_a%';
 +----------+----------------+
