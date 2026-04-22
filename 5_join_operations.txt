@@ -1,0 +1,253 @@
+Write SQL queries using joins to retrieve following
+
+mysql> -- Workers table
+Query OK, 0 rows affected (0.005 sec)
+
+mysql> CREATE TABLE workers (
+    ->     WORKER_ID INT PRIMARY KEY,
+    ->     FIRST_NAME VARCHAR(30),
+    ->     LAST_NAME VARCHAR(30),
+    ->     SALARY INT,
+    ->     JOINING_DATE DATETIME,
+    ->     DEPARTMENT VARCHAR(20)
+    -> );
+Query OK, 0 rows affected (0.188 sec)
+
+mysql>
+mysql> INSERT INTO workers (WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+    -> (1, 'Monika', 'Arora', 100000, '2014-02-20 09:00:00', 'HR'),
+    -> (2, 'Niharika', 'Verma', 80000, '2014-06-11 09:00:00', 'Admin'),
+    -> (3, 'Vishal', 'Singhal', 300000, '2014-02-20 09:00:00', 'HR'),
+    -> (4, 'Amitabh', 'Singh', 500000, '2014-02-20 09:00:00', 'Admin'),
+    -> (5, 'Vivek', 'Bhati', 500000, '2014-06-11 09:00:00', 'Admin'),
+    -> (6, 'Vipul', 'Diwan', 200000, '2014-06-11 09:00:00', 'Account'),
+    -> (7, 'Satish', 'Kumar', 75000, '2014-01-20 09:00:00', 'Account'),
+    -> (8, 'Geetika', 'Chauhan', 90000, '2014-04-11 09:00:00', 'Admin');
+Query OK, 8 rows affected (0.028 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql>
+mysql> -- Bonus table
+Query OK, 0 rows affected (0.002 sec)
+
+mysql> CREATE TABLE bonus (
+    ->     WORKER_REF_ID INT,
+    ->     BONUS_AMOUNT INT,
+    ->     BONUS_DATE DATETIME,
+    ->     FOREIGN KEY (WORKER_REF_ID) REFERENCES workers(WORKER_ID)
+    -> );
+Query OK, 0 rows affected (0.310 sec)
+
+mysql>
+mysql> INSERT INTO bonus (WORKER_REF_ID, BONUS_AMOUNT, BONUS_DATE) VALUES
+    -> (1, 5000, '2016-02-20 00:00:00'),
+    -> (2, 3000, '2016-06-11 00:00:00'),
+    -> (3, 4000, '2016-02-20 00:00:00'),
+    -> (1, 4500, '2016-02-20 00:00:00'),
+    -> (2, 3500, '2016-06-11 00:00:00');
+Query OK, 5 rows affected (0.036 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql>
+mysql> -- Title table
+Query OK, 0 rows affected (0.003 sec)
+
+mysql> CREATE TABLE title (
+    ->     WORKER_REF_ID INT,
+    ->     WORKER_TITLE VARCHAR(30),
+    ->     AFFECTED_FROM DATETIME,
+    ->     FOREIGN KEY (WORKER_REF_ID) REFERENCES workers(WORKER_ID)
+    -> );
+Query OK, 0 rows affected (0.331 sec)
+
+mysql>
+mysql> INSERT INTO title (WORKER_REF_ID, WORKER_TITLE, AFFECTED_FROM) VALUES
+    -> (1, 'Manager', '2016-02-20 00:00:00'),
+    -> (2, 'Executive', '2016-06-11 00:00:00'),
+    -> (8, 'Executive', '2016-06-11 00:00:00'),
+    -> (5, 'Manager', '2016-06-11 00:00:00'),
+    -> (4, 'Asst. Manager', '2016-06-11 00:00:00'),
+    -> (7, 'Executive', '2016-06-11 00:00:00'),
+    -> (6, 'Lead', '2016-06-11 00:00:00'),
+    -> (3, 'Lead', '2016-06-11 00:00:00');
+Query OK, 8 rows affected (0.033 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+
+1. List the workers who got bonus. Display their name bonus amount and date on which bonus was given.
+mysql> select w.first_name, w.last_name, b.bonus_amount, b.bonus_date from workers w inner join bonus b on w.worker_id = b.worker_ref_id;
++------------+-----------+--------------+---------------------+
+| first_name | last_name | bonus_amount | bonus_date          |
++------------+-----------+--------------+---------------------+
+| Monika     | Arora     |         5000 | 2016-02-20 00:00:00 |
+| Niharika   | Verma     |         3000 | 2016-06-11 00:00:00 |
+| Vishal     | Singhal   |         4000 | 2016-02-20 00:00:00 |
+| Monika     | Arora     |         4500 | 2016-02-20 00:00:00 |
+| Niharika   | Verma     |         3500 | 2016-06-11 00:00:00 |
++------------+-----------+--------------+---------------------+
+5 rows in set (0.011 sec)
+
+
+2. List the title of the workers.
+mysql> select w.worker_id, w.first_name, w.last_name, t.worker_title from workers w INNER JOIN title t on w.worker_id = t.worker_ref_id;
++-----------+------------+-----------+---------------+
+| worker_id | first_name | last_name | worker_title  |
++-----------+------------+-----------+---------------+
+|         1 | Monika     | Arora     | Manager       |
+|         2 | Niharika   | Verma     | Executive     |
+|         3 | Vishal     | Singhal   | Lead          |
+|         4 | Amitabh    | Singh     | Asst. Manager |
+|         5 | Vivek      | Bhati     | Manager       |
+|         6 | Vipul      | Diwan     | Lead          |
+|         7 | Satish     | Kumar     | Executive     |
+|         8 | Geetika    | Chauhan   | Executive     |
++-----------+------------+-----------+---------------+
+8 rows in set (0.014 sec)
+
+
+
+3. List all the workers with title as Manager.
+mysql> select w.worker_id, w.first_name, w.last_name, t.worker_title from workers w JOIN title t on w.worker_id = t.worker_ref_id where t.worker_title = 'Manager';
++-----------+------------+-----------+--------------+
+| worker_id | first_name | last_name | worker_title |
++-----------+------------+-----------+--------------+
+|         1 | Monika     | Arora     | Manager      |
+|         5 | Vivek      | Bhati     | Manager      |
++-----------+------------+-----------+--------------+
+2 rows in set (0.009 sec)
+
+or
+
+mysql> select w.worker_id, w.first_name, w.last_name, t.worker_title from workers w, title t where w.worker_id = t.worker_ref_id and t.worker_title = 'Manager';
++-----------+------------+-----------+--------------+
+| worker_id | first_name | last_name | worker_title |
++-----------+------------+-----------+--------------+
+|         1 | Monika     | Arora     | Manager      |
+|         5 | Vivek      | Bhati     | Manager      |
++-----------+------------+-----------+--------------+
+
+
+4. Get list of workers and the bonus amount if any
+
+mysql> select w.worker_id, w.first_name, w.last_name, b.bonus_amount from workers w LEFT OUTER JOIN bonus b on w.worker_id = b.worker_ref_id;
++-----------+------------+-----------+--------------+
+| worker_id | first_name | last_name | bonus_amount |
++-----------+------------+-----------+--------------+
+|         1 | Monika     | Arora     |         5000 |
+|         1 | Monika     | Arora     |         4500 |
+|         2 | Niharika   | Verma     |         3000 |
+|         2 | Niharika   | Verma     |         3500 |
+|         3 | Vishal     | Singhal   |         4000 |
+|         4 | Amitabh    | Singh     |         NULL |
+|         5 | Vivek      | Bhati     |         NULL |
+|         6 | Vipul      | Diwan     |         NULL |
+|         7 | Satish     | Kumar     |         NULL |
+|         8 | Geetika    | Chauhan   |         NULL |
++-----------+------------+-----------+--------------+
+10 rows in set (0.009 sec)
+
+
+# EXERCISE 2
+mysql> CREATE TABLE Department (
+    ->     DeptID INT PRIMARY KEY,
+    ->     DeptName VARCHAR(50) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.204 sec)
+
+mysql>
+mysql> CREATE TABLE Student (
+    ->     StudentID INT PRIMARY KEY,
+    ->     StudentName VARCHAR(50) NOT NULL,
+    ->     DeptID INT,
+    ->     FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+    -> );
+Query OK, 0 rows affected (0.242 sec)
+
+mysql> -- Departments
+Query OK, 0 rows affected (0.003 sec)
+
+mysql> INSERT INTO Department (DeptID, DeptName) VALUES
+    -> (1, 'Computer Science'),
+    -> (2, 'Mechanical'),
+    -> (3, 'Electrical'),
+    -> (4, 'Civil');
+Query OK, 4 rows affected (0.051 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Students
+Query OK, 0 rows affected (0.001 sec)
+
+mysql> INSERT INTO Student (StudentID, StudentName, DeptID) VALUES
+    -> (101, 'Alice', 1),
+    -> (102, 'Bob', 2),
+    -> (103, 'Charlie', 1),
+    -> (104, 'David', NULL),   -- student without department
+    -> (105, 'Eva', 3);
+Query OK, 5 rows affected (0.023 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+Given Schemas
+1. Student Table
+● StudentID (Primary Key)
+● StudentName
+● DeptID
+2. Department Table
+● DeptID (Primary Key)
+● DeptName
+Assume suitable data for each table ensuring appropriate constraints.
+
+
+Write a query to display student names along with their department names using INNER JOIN.
+mysql> select s.studentID, s.studentName, d.deptName from student s inner join department d on s.deptID = d.deptID;
++-----------+-------------+------------------+
+| studentID | studentName | deptName         |
++-----------+-------------+------------------+
+|       101 | Alice       | Computer Science |
+|       103 | Charlie     | Computer Science |
+|       102 | Bob         | Mechanical       |
+|       105 | Eva         | Electrical       |
++-----------+-------------+------------------+
+
+
+Write a query to display all students and their department names using LEFT OUTER JOIN.
+mysql> select s.studentID, s.studentName, d.deptName from student s left outer join department d on s.deptID = d.deptID;
++-----------+-------------+------------------+
+| studentID | studentName | deptName         |
++-----------+-------------+------------------+
+|       101 | Alice       | Computer Science |
+|       102 | Bob         | Mechanical       |
+|       103 | Charlie     | Computer Science |
+|       104 | David       | NULL             |
+|       105 | Eva         | Electrical       |
++-----------+-------------+------------------+
+
+
+Write a query to display all departments and their students using RIGHT OUTER JOIN.
+mysql> select s.studentID, s.studentName, d.deptName from student s right outer join department d on s.deptID = d.deptID;
++-----------+-------------+------------------+
+| studentID | studentName | deptName         |
++-----------+-------------+------------------+
+|       101 | Alice       | Computer Science |
+|       103 | Charlie     | Computer Science |
+|       102 | Bob         | Mechanical       |
+|       105 | Eva         | Electrical       |
+|      NULL | NULL        | Civil            |
++-----------+-------------+------------------+
+
+
+Write a query using NATURAL JOIN to display matching student and department records. 
+
+mysql> select s.studentID, s.studentName, d.deptName from student s natural join department d;
++-----------+-------------+------------------+
+| studentID | studentName | deptName         |
++-----------+-------------+------------------+
+|       101 | Alice       | Computer Science |
+|       103 | Charlie     | Computer Science |
+|       102 | Bob         | Mechanical       |
+|       105 | Eva         | Electrical       |
++-----------+-------------+------------------+
+
