@@ -1,0 +1,137 @@
+
+Performing DDL commands 
+
+1. create database db_name;
+
+2. use db_name;
+
+3. create table table_name (moodle_id int, name varchar(30), phone bigint, address varchar(30), city varchar(30));
+Use bigint for bigger values
+
+4. desc table_name; # To look for the fields you created in the table
+
+Performing alter commands
+
+# adding column
+
+5. alter table table_name add column col_name col_dataType;
+
+# modifying a datatype of a column
+
+6. alter table table_name modify col_name col_new_datatype;
+# Suppose you want
+to change the data type of a particu;ar field, you can do that with “modify”
+
+7. alter table table_name change field_name new_field _name variable_dataType;
+# Suppose you want to change the name of a particular field, you can do that
+with the help of “change”
+
+# Dropping a field name
+
+8. alter table table_name drop field_name; 
+# Suppose you want to remove a particular field from the table, you can do that with “drop” and you don’t have
+to mention it’s data type
+
+
+# renaming a table
+
+9. rename table table1 to table2;
+
+10. Truncate table table_name; 
+# To empty the info filled inside the table.
+
+
+11. drop table table_name; 
+# To remove the table from the database.
+
+
+12. insert into table_name values(); 
+# for int type nums directly, for varchar type
+in “ ”, for date datatype type in “yyyy-mm-dd” format.
+
+13. select * from table_name; # For viewing the details in the table.
+
+If in the default a field is Null then it means if we don’t enter any value in it then it will
+not throw any error
+
+14. mysql> insert into students values(1003, 'parth', 7977777778, NULL, '2006-10-05');
+Query OK, 1 row affected (0.093 sec)
+
+15. Creating a Not Null field
+mysql> create table students(moodle_id int not null, name varchar(20), phone_no bigint, address varchar(30), DOB date);
+Query OK, 0 rows affected (0.594 sec)
+
+mysql> insert into students values(NULL, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+ERROR 1048 (23000): Column 'moodle_id' cannot be null
+mysql>
+
+
+# Primary key
+
+command for primary key
+
+
+Primary key: The PRIMARY KEY constraint uniquely identifies each record in a
+database table.
+Primary keys must contain unique values. A primary key column cannot contain
+NULL values.
+
+
+
+16. mysql> create table students(moodle_id int primary key, name varchar(20), phone_no bigint, address varchar(30), DOB date);
+Query OK, 0 rows affected (0.569 sec)
+
+mysql> insert into students values(NULL, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+ERROR 1048 (23000): Column 'moodle_id' cannot be null
+mysql>
+
+
+
+# Auto Increment
+17. mysql> create table students(moodle_id int primary key auto_increment, name varchar(20), phone_no bigint, address varchar(30), DOB date);
+Query OK, 0 rows affected (0.578 sec)
+
+mysql> insert into students values(1001, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+Query OK, 1 row affected (0.081 sec)
+
+mysql> insert into students (name, phone_no, address, DOB) value('Rugved', 9999999999, 'thane west', '2006-09-07');
+Query OK, 1 row affected (0.375 sec)
+
+mysql> insert into students (name, phone_no, address, DOB) value('Dagdu', 9999899999, 'Celoy', '2006-11-09');
+Query OK, 1 row affected (0.534 sec)
+
+mysql> select *from students;
++-----------+---------+------------+------------+------------+
+| moodle_id | name    | phone_no   | address    | DOB        |
++-----------+---------+------------+------------+------------+
+|      1001 | shubham | 7777777777 | Gokuldham  | 2006-08-03 |
+|      1002 | Rugved  | 9999999999 | thane west | 2006-09-07 |
+|      1003 | Dagdu   | 9999899999 | Celoy      | 2006-11-09 |
++-----------+---------+------------+------------+------------+
+
+# Default paramenter
+
+mysql> create table students(moodle_id int primary key auto_increment, name varchar(20), phone_no bigint, address varchar(30), DOB date, fees int default 150000);
+Query OK, 0 rows affected (0.541 sec)
+
+mysql> insert into students (moodle_id, name, phone_no, address, DOB) values(1001, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+Query OK, 1 row affected (0.050 sec)
+
+mysql> select *from students;
++-----------+---------+------------+-----------+------------+--------+
+| moodle_id | name    | phone_no   | address   | DOB        | fees   |
++-----------+---------+------------+-----------+------------+--------+
+|      1001 | shubham | 7777777777 | Gokuldham | 2006-08-03 | 150000 |
++-----------+---------+------------+-----------+------------+--------+
+1 row in set (0.008 sec)
+
+
+# Exercise 1
+
+Create the tables for the use case developed in Experiment No. 1 using appropriate DDL commands,
+incorporating all necessary integrity constraints such as PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT
+NULL, CHECK, and DEFAULT.
+
+mysql> create table dept(dept_id int primary key, dept_name varchar(30));
+Query OK, 0 rows affected (0.216 sec)
+
