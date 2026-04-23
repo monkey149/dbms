@@ -1,0 +1,150 @@
+
+#CREATING A VIEW AND IMPLEMENTING SOME BASIC COMMANDS ON IT
+
+mysql> select *from employees;
++-----+---------------+------------+--------+
+| eid | name          | department | salary |
++-----+---------------+------------+--------+
+|   1 | Alice Johnson | Admin      |  50000 |
+|   3 | Charlie Brown | Finance    |  60000 |
+|   4 | David Wilson  | IT         |  95000 |
+|   5 | Emma Davis    | HR         |  55000 |
+|   6 | Frank Miller  | Finance    |  62000 |
++-----+---------------+------------+--------+
+
+
+mysql> create view Finance_Employee as
+    -> select eid, name, salary from employees where department = 'Finance';
+Query OK, 0 rows affected (0.422 sec)
+
+mysql> select *from Finance_Employee;
++-----+---------------+--------+
+| eid | name          | salary |
++-----+---------------+--------+
+|   3 | Charlie Brown |  60000 |
+|   6 | Frank Miller  |  62000 |
++-----+---------------+--------+
+2 rows in set (0.339 sec)
+
+mysql> update finance_Employee
+    -> set salary = 78000 where eid = 3;
+Query OK, 1 row affected (0.401 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select *from Finance_Employee;
++-----+---------------+--------+
+| eid | name          | salary |
++-----+---------------+--------+
+|   3 | Charlie Brown |  78000 |
+|   6 | Frank Miller  |  62000 |
++-----+---------------+--------+
+2 rows in set (0.009 sec)
+
+mysql> select max(salary), min(salary), avg(salary) from Finance_Employee;
++-------------+-------------+-------------+
+| max(salary) | min(salary) | avg(salary) |
++-------------+-------------+-------------+
+|       78000 |       62000 |  70000.0000 |
++-------------+-------------+-------------+
+1 row in set (0.338 sec)
+
+
+# CREATING TRIGGER FOR AGE
+
+CREATE OR REPLACE TRIGGER trigger_name
+BEFORE / AFTER / INSTEAD OF
+INSERT / DELETE / UPDATE ON table_name
+[REFERENCING [NEW AS new_cols] [OLD AS old_cols] ]
+[FOR EACH ROW [WHEN (where_condition)] ] [DECLARE]
+BEGIN EXCEPTION
+END; (classic trigger syntax)
+
+mysql> delimiter $$
+mysql>
+mysql> create trigger age_verify
+    -> before insert on sailors
+    -> for each row
+    -> begin
+    -> if new.age < 0 then
+    ->          set new.age = 0;
+    -> end if;
+    -> end $$
+Query OK, 0 rows affected (0.685 sec)
+
+mysql> delimiter ;
+mysql>
+mysql>
+mysql> insert into sailors value(99, 'Motu', 8, -23);
+Query OK, 1 row affected (0.460 sec)
+
+mysql> select *from sailors;
++-----+---------+--------+-------+
+| sid | sname   | rating | age   |
++-----+---------+--------+-------+
+|  22 | dustin  |      7 | 45.00 |
+|  29 | brutus  |      1 | 33.00 |
+|  31 | lubber  |      8 | 55.50 |
+|  33 | andy    |      8 | 25.50 |
+|  58 | rusty   |     10 | 35.00 |
+|  64 | horatio |      7 | 35.00 |
+|  71 | zorba   |     10 | 16.00 |
+|  74 | horatio |      9 | 35.50 |
+|  85 | art     |      3 | 25.50 |
+|  95 | bob     |      3 | 63.50 |
+|  99 | Motu    |      8 |  0.00 |
++-----+---------+--------+-------+
+11 rows in set (0.009 sec)
+
+
+
+# MOBILE VERIFY USING TRIGGER
+
+-> delimiter $$
+
+mysql> CREATE TRIGGER mobile_verify
+    -> BEFORE INSERT ON mobileinfo
+    -> FOR EACH ROW
+    -> BEGIN
+    ->     IF NEW.phone_no IS NULL THEN
+    ->         SIGNAL SQLSTATE '45000'
+    ->             SET MESSAGE_TEXT = 'Phone_no can''t be null';
+    ->     END IF;
+    ->
+    ->     IF CHAR_LENGTH(NEW.phone_no) <> 10 THEN
+    ->         SIGNAL SQLSTATE '45000'
+    ->             SET MESSAGE_TEXT = 'Phone no should be strictly of 10 digits';
+    ->     END IF;
+    ->
+    ->     IF NEW.phone_no NOT RLIKE '^[0-9]{10}$' THEN
+    ->         SIGNAL SQLSTATE '45000'
+    ->             SET MESSAGE_TEXT = 'Phone no must contain numbers only';
+    ->     END IF;
+    -> END$$
+Query OK, 0 rows affected (0.111 sec)
+
+mysql> delimiter ;
+mysql>
+mysql>
+mysql>
+mysql> select *from mobileinfo;
++-----+-----------+------------+
+| CID | Name      | Phone_no   |
++-----+-----------+------------+
+|   1 | Jhethalal | 8574125412 |
+|   2 | Tarak     | 7414741474 |
+|   3 | Aatmaram  | 8529639639 |
++-----+-----------+------------+
+3 rows in set (0.020 sec)
+
+
+mysql>
+mysql> insert into mobileinfo value (4, 'Roshan', 7414784884846849);
+ERROR 1644 (45000): Phone no should be strictly of 10 digits
+mysql>
+mysql>
+mysql> insert into mobileinfo value (4, 'Roshan', NULL);
+ERROR 1644 (45000): Phone_no can't be null
+mysql>
+mysql> insert into mobileinfo value (4, 'Roshan', 8528528528);
+
+
