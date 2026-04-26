@@ -54,14 +54,14 @@ in “ ”, for date datatype type in “yyyy-mm-dd” format.
 If in the default a field is Null then it means if we don’t enter any value in it then it will
 not throw any error
 
-14. mysql> insert into students values(1003, 'parth', 7977777778, NULL, '2006-10-05');
+14. mysql> insert into students values(1003, 'pranati', 7977777778, NULL, '2006-10-05');
 Query OK, 1 row affected (0.093 sec)
 
 15. Creating a Not Null field
 mysql> create table students(moodle_id int not null, name varchar(20), phone_no bigint, address varchar(30), DOB date);
 Query OK, 0 rows affected (0.594 sec)
 
-mysql> insert into students values(NULL, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+mysql> insert into students values(NULL, 'Shinchan', 7777777777, 'Gokuldham', '2006-08-03');
 ERROR 1048 (23000): Column 'moodle_id' cannot be null
 mysql>
 
@@ -81,7 +81,7 @@ NULL values.
 16. mysql> create table students(moodle_id int primary key, name varchar(20), phone_no bigint, address varchar(30), DOB date);
 Query OK, 0 rows affected (0.569 sec)
 
-mysql> insert into students values(NULL, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+mysql> insert into students values(NULL, 'Shinchan', 7777777777, 'Gokuldham', '2006-08-03');
 ERROR 1048 (23000): Column 'moodle_id' cannot be null
 mysql>
 
@@ -91,10 +91,10 @@ mysql>
 17. mysql> create table students(moodle_id int primary key auto_increment, name varchar(20), phone_no bigint, address varchar(30), DOB date);
 Query OK, 0 rows affected (0.578 sec)
 
-mysql> insert into students values(1001, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+mysql> insert into students values(1001, 'Shinchan', 7777777777, 'Gokuldham', '2006-08-03');
 Query OK, 1 row affected (0.081 sec)
 
-mysql> insert into students (name, phone_no, address, DOB) value('Rugved', 9999999999, 'thane west', '2006-09-07');
+mysql> insert into students (name, phone_no, address, DOB) value('Roney', 9999999999, 'thane west', '2006-09-07');
 Query OK, 1 row affected (0.375 sec)
 
 mysql> insert into students (name, phone_no, address, DOB) value('Dagdu', 9999899999, 'Celoy', '2006-11-09');
@@ -114,14 +114,14 @@ mysql> select *from students;
 mysql> create table students(moodle_id int primary key auto_increment, name varchar(20), phone_no bigint, address varchar(30), DOB date, fees int default 150000);
 Query OK, 0 rows affected (0.541 sec)
 
-mysql> insert into students (moodle_id, name, phone_no, address, DOB) values(1001, 'shubham', 7777777777, 'Gokuldham', '2006-08-03');
+mysql> insert into students (moodle_id, name, phone_no, address, DOB) values(1001, 'Shinchan', 7777777777, 'Gokuldham', '2006-08-03');
 Query OK, 1 row affected (0.050 sec)
 
 mysql> select *from students;
 +-----------+---------+------------+-----------+------------+--------+
 | moodle_id | name    | phone_no   | address   | DOB        | fees   |
 +-----------+---------+------------+-----------+------------+--------+
-|      1001 | shubham | 7777777777 | Gokuldham | 2006-08-03 | 150000 |
+|      1001 | Shinchan | 7777777777 | Gokuldham | 2006-08-03 | 150000 |
 +-----------+---------+------------+-----------+------------+--------+
 1 row in set (0.008 sec)
 
